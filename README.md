@@ -56,7 +56,21 @@ plink --bfile ../Data/PLINK_files/MARITIME_ROUTE --keep ind_bq249.txt --make-bed
 plink --bfile ../Data/PLINK_files/MARITIME_ROUTE --freq --snp rs3755319 --family --out variant_rs3755319;
 ```
 
-7. Determining the evolution of the identified variables across time among the different populations
+7. Getting the files to track the frequency of the variants identified across time among populations
 ```bash
+#Creating a directory in the data directory and downloading the data
+cd ../Data;
+mkdir ancient_data;
+cd ancient_data;
 
+#Getting the plink files
+wget https://raw.githubusercontent.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/main/steps/Step%200/DataS1.fam;
+wget https://github.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/raw/main/steps/Step%200/DataS1.bed;
+wget https://github.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/raw/main/steps/Step%200/DataS1.bim;
+
+#Getting the .xlsx file
+wget https://github.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/raw/main/data/Reich%20dataset%20V50.xlsx;
+
+#Running a R script to create a txt file to filter the plink files
+Rscript ../../../bin/ancient_filter.R ../Reich_dataset_V50.xlsx ../
 ```
