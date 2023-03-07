@@ -72,5 +72,13 @@ wget https://github.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/raw/ma
 wget https://github.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/raw/main/data/Reich%20dataset%20V50.xlsx;
 
 #Running a R script to create a txt file to filter the plink files
-Rscript ../../../bin/ancient_filter.R ../Reich_dataset_V50.xlsx ../
+Rscript ../../bin/ancient_filter.R Reich_dataset_V50.xlsx .
+
+#Filtering the plink files
+mkdir filtered;
+cd filtered;
+plink -bfile ../DataS1 --keep ../inds_to_keep.txt --make-bed --out anc_filtered;
+
+#Filtering the annotation file using a new R script
+Rscript ../../bin/annotation_filter.R Reich_dataset_V50.xlsx ./filtered/anc_filtered.fam ./filtered
 ```

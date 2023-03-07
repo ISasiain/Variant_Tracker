@@ -7,7 +7,7 @@ library(readxl)
 
 #Parsing command line arguments. The xml file containing the features of the ancient samples should be the first argument.
 #The location of the output inds_to_keep.txt should be the second argument.
-args = commandArgs(trailingOnly=TRUE)
+args <- commandArgs(trailingOnly=TRUE)
 
 #Opening Reich_dataset_V50.xlsx file
 features <- read_excel(args[1])
