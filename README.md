@@ -22,6 +22,7 @@ mkdir Data;
 mkdir 01_Filtered_clinvar;
 mkdir 02_Generate_input;
 mkdir 03_Variant_distribution;
+mkdir 04_Dividing_ancient_plink;
 ```
 
 3. Getting the required data. Downloading the clinvar database (variant_summary.txt). Filtering the Clinvar data to remove all the variants not classified as Pathogenic or likely pathogenic.
@@ -81,4 +82,22 @@ plink -bfile ../DataS1 --keep ../inds_to_keep.txt --make-bed --out anc_filtered;
 
 #Filtering the annotation file using a new R script
 Rscript ../../bin/annotation_filter.R Reich_dataset_V50.xlsx ./filtered/anc_filtered.fam ./filtered
+```
+
+8. Dividing the plink regarding the year of origin of the samples to determine the change of that variant across time.
+```bash
+cd ../../Dividing ancient plink;
+
+#Generating the new filtering txt files into the ./filtering_files directory
+mkdir filtering_files;
+Rscript ../bin/ancient_splitter.R ../Data/ancient_data/filtered/filtered_annotation.tsv ./filtering_files/;
+
+#Running plink to get the allele frequencies for each time period. THe following variant (rs3094315) was randomly choosen to evaluate the code
+for file in filtering_files/*; do name_core=$( echo ${file} | cut -d \/ -f 2 | cut -d "." -f 1 ); plink --bfile ../Data/ancient_data/DataS1 --keep $file --allow-no-sex --freq --snp rs3094315 --make-bed -out ${name_core}; done;
+
+#Running plink to get the allele frequencies of each population across time. THe following variant (rs3094315) was randomly choosen to evaluate the code
+for file in filtering_files/*; do name_core=$( echo ${file} | cut -d \/ -f 2 | cut -d "." -f 1 ); plink --bfile ../Data/ancient_data/DataS1 --keep $file --freq --snp rs3094315 --family --makbed -out ${name_core}; done
+
+
+
 ```
