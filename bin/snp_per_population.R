@@ -6,10 +6,12 @@
 
 #Loading the required packages
 library(snpStats)
-#library(dplyr)
+
+#Parsing command line arguments
+args <- commandArgs(trailingOnly=TRUE)
 
 #Reading the plink files
-var_file <- read.plink("/home/inf-52-2022/pop_gen_project/Data/PLINK_files/MARITIME_ROUTE")
+var_file <- read.plink(args[1])
 
 #Creating a matrix with the MAF of each variant per population
 
@@ -33,4 +35,5 @@ for (pop in unique(populations)) {
 }
 
 
-write.table(MAF_df, file="/home/inf-52-2022/pop_gen_project/05_Generating_plots/curr_SNP_matrix.txt")
+write.table(MAF_df, file=args[2])
+print("PROCESS FINISHED")
