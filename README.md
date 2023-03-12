@@ -4,7 +4,29 @@
 #### BIOS29
 ## INTRODUCTION
 ## USAGE
-## PROCEDURE
+## SCRIPTS
+
+The following R scripts, which are available in the bin folder of the project's directory were created for this work. The function of each will be summarized next.
+
+gsub("> 12000", "12000_Inf", gsub("^0_", "-Inf_", gsub("-", "_", gsub(" BC", "", gsub("\\.","",selected_interval())))))), "_SNP_matrix.txt", sep="")
+
+- **snp_per_population.R**
+
+    This script takes plink files in bed, bim and fam format as the input and outputs a matrix of the Minor Allele Frequency of the variants in all the populations (families specified in the fam file) of the plink file. The output matrix has the variants as rows and the populations as columns. The created files is stored in the directory specified as an argument.
+
+- **ancient_splitter.R**
+
+    This scripts takes the annotation file of an ancient DNA plink file as an input and creates filtering.txt files  (files that can be used to filter plink files using the command line plink programme)  to split the plink database un subplink files based on the estimated mean age of the ancient DNA samples. The time intervals in which the plink file is splitted are the following; 0-1000, 1000-2000, 2000-3000, 3000-4000, 4000-5000, 5000-6000, 6000-7000, 7000-8000, 8000-9000, 9000-10000, 10000-12000 and >12000 years BC. THe files generated are stored in the directory specified as an argument.
+
+- **var_track_app.R**
+
+    This scipts contains the code necessary for running a user's interface using R and rShiny. The functions needed are defined in th var_track_functions.R script.
+
+- **var_track_functions.R**
+
+    This script contains the functions  needed to run the user's interface defined in the var_track_app.R.
+
+## APPLICATION DEVELOPMENT
 
 ### --> Setting the working environment
 
@@ -137,91 +159,7 @@ echo "Macedonia 688" > ind_mc688.txt;
 plink --bfile ../../01_Raw_data/current_data/MARITIME_ROUTE --keep ind_mc688.txt --make-bed --out mc688;
 ```
 
-#########################################################################
+### --> Creating an interface
 
-
-4. Generating a sample input file by selecting a random individual from the PLINK files.
-```bash
-cd ../02_Generate_input;
-
-#Create a file choosing the individual of interest and usE it to generate individual PLINK files
-echo "Basque 249" > ind_bq249.txt;
-plink --bfile ../Data/PLINK_files/MARITIME_ROUTE --keep ind_bq249.txt --make-bed --out bq249;
-```
-
-5. Use R to identify the variants associated with disease of each individual (the sample input file will be used).
-```bash
-
-```
-
-6. Getting the distribution across populations of the variants identified in the previous step
-```bash
-#Getting the alelle proprtions of the variant of interest 
-plink --bfile ../Data/PLINK_files/MARITIME_ROUTE --freq --snp rs3755319 --family --out variant_rs3755319;
-```
-
-7. Getting the files to track the frequency of the variants identified across time among populations
-```bash
-#Creating a directory in the data directory and downloading the data
-cd ../Data;
-mkdir ancient_data;
-cd ancient_data;
-
-#Getting the plink files
-wget https://raw.githubusercontent.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/main/steps/Step%200/DataS1.fam;
-wget https://github.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/raw/main/steps/Step%200/DataS1.bed;
-wget https://github.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/raw/main/steps/Step%200/DataS1.bim;
-
-#Getting the .xlsx file
-wget https://github.com/sarabehnamian/Origins-of-Ancient-Eurasian-Genomes/raw/main/data/Reich%20dataset%20V50.xlsx;
-
-#Running a R script to create a txt file to filter the plink files
-Rscript ../../bin/ancient_filter.R Reich_dataset_V50.xlsx .
-
-#Filtering the plink files
-mkdir filtered;
-cd filtered;
-plink -bfile ../DataS1 --keep ../inds_to_keep.txt --make-bed --out anc_filtered;
-
-#Filtering the annotation file using a new R script
-Rscript ../../bin/annotation_filter.R Reich_dataset_V50.xlsx ./filtered/anc_filtered.fam ./filtered
-```
-
-8. Dividing the plink regarding the year of origin of the samples to determine the change of that variant across time.
-```bash
-cd ../../Dividing ancient plink;
-
-#Generating the new filtering txt files into the ./filtering_files directory
-mkdir filtering_files;
-Rscript ../bin/ancient_splitter.R ../Data/ancient_data/filtered/filtered_annotation.tsv ./filtering_files/;
-
-#Running plink to get the allele frequencies for each time period. THe following variant (rs3094315) was randomly choosen to evaluate the code
-for file in filtering_files/*; do name_core=$( echo ${file} | cut -d \/ -f 2 | cut -d "." -f 1 ); plink --bfile ../Data/ancient_data/DataS1 --keep $file --allow-no-sex --freq --snp rs3094315 --make-bed -out ${name_core}; done;
-
-#Running plink to get the allele frequencies of each population across time. THe following variant (rs3094315) was randomly choosen to evaluate the code
-for file in filtering_files/*; do name_core=$( echo ${file} | cut -d \/ -f 2 | cut -d "." -f 1 ); plink --bfile ../Data/ancient_data/DataS1 --keep $file --freq --snp rs3094315 --family --makbed -out ${name_core}; done
-```
-
-10. Preprocessing the full ancidnt DNA data. Getting the ped file, and changing the group identifiers to the country names using ancient_data_adapter R script.
-```bash
-cd ../Data/full_ancient_data;
-#Creating the ped file
-plink --bfile v54.1_1240K_public --recode --out full_ancient_ped;
-#Editing the group id of the ped file to the country specified in the annotation file
-cat v54.1_1240K_public.anno | cut -f 14 | grep -v "Political Entity" | tr " " "_" > groupID.txt;
-cat full_ancient_ped.ped | cut -d " " -f 2- > ped_minus_group.txt;
-paste -d " " groupID.txt ped_minus_group.txt > ancient_data.ped;
-rm ped_minus_group.txt rm groupID.txt;
-
-#Creating .txt files to filter the ped file according to each time interval using a Rscript
-Rscript ../../bin/ancient_splitter.R ./v54.1_1240K_public.anno ./grouping_files/
-
-#Generating bed, bim and fam files for each time interval
-mkdir groupped_plink_files;
-or file in grouping_files/*; do name_core=$( echo ${file} | cut -d \/ -f 2 | cut -d "." -f 1 ); plink --file ancient_data --keep $file --make-bed -out ./groupped_plink_files/${name_core}; done;
-
-#Generating MAF matrix per each time period
-ls groupped_plink_files/*.fam | while read line; do name=$(echo $line | cut -d \/ -f 2 | sed 's/.fam//'); Rscript ../../bin/snp_per_population.R ./groupped_plink_files/${name} ./groupped_plink_files/MAF_matrix/${name}_SNP_matrix.txt; done;
-```
-
-### Creating an interface
+1. Creating csv files cotaining the coordinates of the populations.
+>The coordinates of populations included in both, current and ancient DNA files were created in order to plot the MAFs. The coordinate values were determined for the capital of the country/region and obtained from diverese sources.
