@@ -1,6 +1,5 @@
 #!/usr/bin/env Rscript
 
-#This functions detects the pathogenic variants from the individual input bim file
 path_var_detector <- function(clinvar_ref_file, bim_file) {
   
   # Reading the clinvar variant files and bim files as dataframes
@@ -10,6 +9,7 @@ path_var_detector <- function(clinvar_ref_file, bim_file) {
   # Filter the dataframes to get only the variants found in both dataframes
   matches_bim <- bim[,2] %in% clinvar[,2]
   matches_clinvar <- clinvar[,2] %in% bim[,2]
+  
   
   # Getting unique values per variant
   matching_bim <- unique(bim[matches_bim,])
@@ -41,51 +41,58 @@ path_var_detector <- function(clinvar_ref_file, bim_file) {
 
 #Creating a function to plot the MAF in a map
 plotting_MAF_in_map <- function(MAF_matrix, coordinates_file, variant_of_interest) {
-    #Loading the required data
-    library(ggplot2)
-    library(rworldmap)
-
-    #Reading the files
-    pop_df <- read.csv(coordinates_file, sep =",")
-    MAF_df <- read.table(MAF_matrix)
-
-    #Getting the MAF of out variant of interest and adding it to the dataframe
-    pop_df$"Minor allele frequency" <- t(MAF_df[variant_of_interest,])
-    pop_df$"Mayor allele frequency" <- 1 - pop_df$"Minor allele frequency"
-
-    #Getting the coordenates to limit the map
-    long <- c(min(pop_df$Longitude) - 1, max(pop_df$Longitude) + 1)
-    lat <- c(min(pop_df$Latitude) - 1, max(pop_df$Latitude) + 1)
-
-    #Potting the MAF in a map
-    png("/home/inf-52-2022/pop_gen_project/05_Generating_plots/my_plot.png", width=700, height=700)
-    my_plot <- mapPies(pop_df, nameX = "Longitude", nameY = "Latitude",
-            nameZs = c("Minor allele frequency", "Mayor allele frequency"), 
-            zColours = c("Red", "Green"),
-            symbolSize = 1, 
-            xlim = long, 
-            ylim = lat, 
-            borderCol = "Black",
-            landCol = "lightGrey",
-            oceanCol = "lightBlue",
-            lwd=2,
-            addSizeLegend=FALSE,
-            addCatLegend=FALSE)
-
-    #Creating a legend for the plot
-    legend(long[1],lat[1]+4,
-       legend=c("Minor allele frequency",
-                 "Mayor allele frequency"),
-       col=c("red",
-             "green"),
-       pch=16,
-       cex=1.7,
-       pt.cex=2,
-       bty="o",
-       box.lty=2,
-       horiz = F,
-       bg="#FFFFFF70")
-
-    dev.off()
-
+  #Loading the required data
+  library(rworldmap)
+  
+  #Reading the files
+  coor_df <- read.csv(coordinates_file, sep =",", header=TRUE)
+  MAF_df <- read.table(MAF_matrix)
+  
+  coor_known <- colnames(MAF_df) %in% coor_df$"Group"
+  MAF_df <- MAF_df[,coor_known]
+  
+  #Getting the coordinates of the files only of the files included into the MAF matrix
+  pop_in_file <- coor_df$"Group" %in% colnames(MAF_df)
+  pop_df <- data.frame(coor_df[pop_in_file,])
+  
+  #Sorting both dataframes to guarantee that they are in the same order
+  MAF_df <- MAF_df[order(names(MAF_df))]
+  pop_df <- pop_df[order(pop_df$"Group"),]
+  
+  #Getting the MAF of out variant of interest and adding it to the dataframe
+  pop_df$"Minor allele frequency" <- t(MAF_df[variant_of_interest,])
+  pop_df$"Mayor allele frequency" <- 1 - pop_df$"Minor allele frequency"
+  
+  #Removing the rows in which the value of the MiAF and MaAF is NA
+  pop_df <- pop_df[complete.cases(pop_df), ]
+  
+  print(pop_df)
+  
+  #Getting the coordenates to limit the map
+  long <- c(min(pop_df$Longitude) - 1, max(pop_df$Longitude) + 1)
+  lat <- c(min(pop_df$Latitude) - 1, max(pop_df$Latitude) + 1)
+  
+  if (nrow(pop_df) == 0) {
+    long <- c(-30, 30)
+    lat <- c(20, 80)
+  }
+  
+  #Potting the MAF in a map
+  my_plot <- mapPies(pop_df, nameX = "Longitude", nameY = "Latitude",
+                     nameZs = c("Minor allele frequency", "Mayor allele frequency"), 
+                     zColours = c("Red", "Green"),
+                     symbolSize = 1, 
+                     xlim = long, 
+                     ylim = lat, 
+                     borderCol = "Black",
+                     landCol = "lightGrey",
+                     oceanCol = "lightBlue",
+                     lwd=2,
+                     
+                     addSizeLegend=FALSE,
+                     addCatLegend=FALSE)
+  
+  
+  return(my_plot)
+  
 }
