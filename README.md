@@ -95,6 +95,7 @@ plink --bfile v54.1_1240K_public --recode --out full_ancient_ped;
 
 #Editing the group id of the ped file to the country specified in the annotation file
 
+
 #Generating a file with the new group ID
 cat v54.1_1240K_public.anno | cut -f 14 | grep -v "Political Entity" | tr " " "_" > groupID.txt;
 #Generating a file with the ped file without the first column
@@ -107,6 +108,8 @@ rm ped_minus_group.txt rm groupID.txt;
 3. Generating filtering txt files to get different plink files per each time period specified (0-1000, 1000-2000, 2000-3000, 3000-4000, 4000-5000, 5000-6000, 6000-7000, 7000-8000, 8000-9000, 9000-10000, 10000-12000 and >12000 years BC).
 
 ```bash
+#Tranforming the annotation file to remove white spaces
+cat v54.1_1240K_public.anno | tr " " "_" > v54.1_1240K_public.anno;
 #Creating .txt files to filter the ped file according to each time interval using a Rscript
 mkdir grouping_files;
 Rscript ../../bin/ancient_splitter.R ./v54.1_1240K_public.anno ./grouping_files/
@@ -117,18 +120,11 @@ Rscript ../../bin/ancient_splitter.R ./v54.1_1240K_public.anno ./grouping_files/
 ```bash
 #Generating bed, bim and fam files for each time interval
 mkdir groupped_plink_files;
-or file in grouping_files/*; do name_core=$( echo ${file} | cut -d \/ -f 2 | cut -d "." -f 1 ); plink --file ancient_data --keep $file --make-bed -out ./groupped_plink_files/${name_core}; done;
+for file in grouping_files/*; do name_core=$( echo ${file} | cut -d \/ -f 2 | cut -d "." -f 1 ); plink --file ancient_data --keep $file --make-bed -out ./groupped_plink_files/${name_core}; done;
 ```
 
 2. Determining the MAF of all the variants of the populations of diffrerent time intervals from the ancient DNA samples.
 ```bash
-#Generating the new filtering txt files into the ./filtering_files directory using the ancient_splitter.R script, which is available in the bin directory.
-mkdir filtering_files;
-Rscript ../bin/ancient_splitter.R ../Data/ancient_data/filtered/filtered_annotation.tsv ./filtering_files/;
-
-#Generating bed, bim and fam files for each time interval
-mkdir grouped_plink_files;
-or file in grouping_files/*; do name_core=$( echo ${file} | cut -d \/ -f 2 | cut -d "." -f 1 ); plink --file ancient_data --keep $file --make-bed -out ./groupped_plink_files/${name_core}; done;
 
 #Changing directory and crating a subfolder
 cd ../../02_Preprocessed_data/
@@ -161,5 +157,8 @@ plink --bfile ../../01_Raw_data/current_data/MARITIME_ROUTE --keep ind_mc688.txt
 
 ### --> Creating an interface
 
-1. Creating csv files cotaining the coordinates of the populations.
+1. Creating csv files containing the coordinates of the populations.
 >The coordinates of populations included in both, current and ancient DNA files were created in order to plot the MAFs. The coordinate values were determined for the capital of the country/region and obtained from diverese sources.
+
+2. Running the interface
+>The user's inteface was designed  using a Rshiny script "var_track_app.R", which is stored in the bin folder. Tis script makes use of the functions defined in the "var_track_functions.R" script to locate the pathogenic variants and plot the results.
