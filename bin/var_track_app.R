@@ -43,38 +43,36 @@ server <- function(input, output, session) {
     }
   })
   
-  # Create a reactive object for the selected time interval
-  selected_interval <- reactive({
-    input$interval
-  })
-  
   # Display the pathogenic variants identified and their effect
   output$variant_list <- renderUI({
     req(input$run_analysis)
     variants <- path_var_detector("./pathogenic_variants.tsv", file_path())
     variant_divs <- lapply(names(variants), function(name) {
+      new_name <- paste("interval", name, sep=)
       div(
         br(),
         h3(strong(paste("  --> VARIANT:", name))),
         p(variants[[name]]),
         br(),
         tabsetPanel(
-          tabPanel("Details", 
+          tabPanel("Current Populations", 
                    h4(paste("FREQUENCY OF", name, "IN THE CURRENT POPULATION")),
                    renderPlot(plotting_MAF_in_map("./curr_SNP_matrix.txt", "./curr_coor.csv", name)),
                    h5("MINOR ALLELE FREQUENCY", style = "color:red;", align = "center"),
                    h5("MAJOR ALLELE FREQUENCY", style = "color:green;" , align = "center")
           ),
           
-          tabPanel("Evolution", 
+          tabPanel("Ancient Populations", 
                    h4(paste("EVOLUTION OF", name, "ACROSS TIME"), br(), br()),
-                   selectInput("interval", "Select interval:", 
-                               choices = c("0-1.000 BC", "1.000-2.000 BC", "2.000-3.000 BC", 
-                                           "3.000-4.000 BC", "4.000-5.000 BC", "5.000-6.000 BC",
-                                           "6.000-7.000 BC", "7.000-8.000 BC", "8.000-9.000 BC", 
-                                           "9.000-10.000 BC", "10.000-12.000", "> 12.000 BC")),
+                   selectInput(new_name, "Select interval (Years BC):", 
+                               choices = c("0_1000", "1000_2000", "2000_3000", 
+                                           "3000_4000", "4000_5000", "5000_6000",
+                                           "6000_7000", "7000_8000", "8000_9000", 
+                                           "9000_10000", "10000_12000", "> 12000")),
+                   
+                   
                    # Call the function with the selected interval as input
-                   renderPlot(plotting_MAF_in_map("range_10000_12000_SNP_matrix.txt", "./ancient_coor.csv", name)),
+                   renderPlot(plotting_MAF_in_map(paste("range_", gsub("> 12000", "12000_Inf", gsub("^0", "-Inf", input[[new_name]])), "_SNP_matrix.txt", sep=""), "./ancient_coor.csv", name)),
                    h5("MINOR ALLELE FREQUENCY", style = "color:red;", align = "center"),
                    h5("MAJOR ALLELE FREQUENCY", style = "color:green;" , align = "center")
           )
