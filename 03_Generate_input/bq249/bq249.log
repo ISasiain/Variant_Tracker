@@ -1,0 +1,26 @@
+PLINK v1.90b6.21 64-bit (19 Oct 2020)
+Options in effect:
+  --bfile ../Data/PLINK_files/MARITIME_ROUTE
+  --keep ind_bq249.txt
+  --make-bed
+  --out bq249
+
+Hostname: bioinf-serv2.cob.lu.se
+Working directory: /home/inf-52-2022/pop_gen_project/02_Generate_input
+Start time: Mon Mar  6 14:57:57 2023
+
+Random number seed: 1678111077
+2051955 MB RAM detected; reserving 1025977 MB for main workspace.
+75194 variants loaded from .bim file.
+964 people (0 males, 0 females, 964 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to bq249.nosex .
+--keep: 1 person remaining.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 1 founder and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate in remaining samples is 0.999787.
+75194 variants and 1 person pass filters and QC.
+Note: No phenotypes present.
+--make-bed to bq249.bed + bq249.bim + bq249.fam ... done.
+
+End time: Mon Mar  6 14:57:57 2023

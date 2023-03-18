@@ -1,0 +1,15 @@
+PLINK v1.90b6.21 64-bit (19 Oct 2020)
+Options in effect:
+  --bfile ../Data/PLINK_files/MARITIME_ROUTE
+  --keep ind_bq249.txt
+  --make-bed
+  --output bq249
+
+Hostname: bioinf-serv2.cob.lu.se
+Working directory: /home/inf-52-2022/pop_gen_project/02_Generate_input
+Start time: Mon Mar  6 14:57:50 2023
+
+Error: Unrecognized flag ('--output').
+For more information, try "plink --help <flag name>" or "plink --help | more".
+
+End time: Mon Mar  6 14:57:50 2023
