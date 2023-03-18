@@ -1,0 +1,2 @@
+01_Raw_data/clinvar/pathogenic_variants.tsv filter=lfs diff=lfs merge=lfs -text
+01_Raw_data/clinvar/variant_summary.txt filter=lfs diff=lfs merge=lfs -text
