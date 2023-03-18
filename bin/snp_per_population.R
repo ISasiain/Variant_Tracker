@@ -1,7 +1,57 @@
-#Installing snpStats
+#!/usr/bin/R
+
+# -SCRIPT'S NAME:
+# 
+#     snp_per_population.R
+# 
+# -DESCRIPTION:
+# 
+#     This functions creates a matrix with population names as columns and variant names as rows containing the Minor Allele
+#     Frequency of each variant and population. 
+# 
+# -USER DEFINED FUNCTIONS:
+# 
+#     None.
+# 
+# -LIST OF MODULES:
+# 
+#     snpStats
+# 
+# -PROCEDURE:
+# 
+#     1.Check if "BiocManager" package is installed. If not, install it and load "snpStats" package..
+#     
+#     2.Parse command line arguments and read plink files.
+#     
+#     3.Compute the MAF per variant for each population by creating a list of indexes for individuals belonging to each population, creating an empty dataframe with variant names as row names, and adding MAF data of each population as new columns in the dataframe.
+#     
+#     4.Write the MAF dataframe to a file specified by the second command line argument.
+#     
+# 
+# -INPUT:
+# 
+#     The script takes two command line arguments:
+# 
+#     --> The path to the plink file (without the extensions)
+#     --> The path to the output directory where the MAF matrix will be saved
+# 
+# -OUTPUT:
+# 
+#     The script generates a txt file containing a MAF matrix with the populations as columns and variants as rows
+# 
+# -USAGE:
+# 
+#     Execution of the script: Rscript snp_per_population input_plink output_MAX_matrix
+# 
+# -VERSION: 1.0
+# 
+#     DATE: 14/03/2023
+# 
+# -AUTHOR: Iñaki Sasiain Casado
+
+#Installing snpStats (uncomment the following commands if the package is not already installed)
 #if (!require("BiocManager", quietly = TRUE))
 #    install.packages("BiocManager")
-
 #BiocManager::install("snpStats")
 
 #Loading the required packages
