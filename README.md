@@ -3,12 +3,23 @@
 #### Author: Iñaki Sasiain Casado
 #### BIOS29
 ## INTRODUCTION
+
+The aim of this tool is to identify all the pathogenic variants from an individual Plink file (bim file) using Clinvar. After the identification all the pathogenic variants will be displayed with a short annotation text about the variant and its phenotypic effect. Besides, the Minor Allele Frequency of the identified variants will be displayed in current populations and in ancient populations across time. This software has been designed as an rShiny app, in order to facilitate its usage through an user interface to users whithout experience in the usage in command line apps.
+
+## INSTALLING AND RUNNING THE SOFTWARE
+
+
+
 ## USAGE
+
+1. Input the bim file of the individual to analyse and click the Run Analysis button.
+2. Results. A list with the pathogenic or likely pathogenic variants identified will be displayed. A short annotation text per variant will also be displayed, with information about the variant and its phenotypic consequence.
+3. If the Current Populations tab is selected the user will be shown the Minor Allele Frequency in the locations corresponding to the refernce populations in a map.
+4. If the user selects the Ancient Populations tab it will be allowed to choose a time interval to display the MAF map of the different populations.  The location of the pie chart in the map represents the location of that population.
+
 ## SCRIPTS
 
 The following R scripts, which are available in the bin folder of the project's directory were created for this work. The function of each will be summarized next.
-
-gsub("> 12000", "12000_Inf", gsub("^0_", "-Inf_", gsub("-", "_", gsub(" BC", "", gsub("\\.","",selected_interval())))))), "_SNP_matrix.txt", sep="")
 
 - **snp_per_population.R**
 
@@ -28,7 +39,7 @@ gsub("> 12000", "12000_Inf", gsub("^0_", "-Inf_", gsub("-", "_", gsub(" BC", "",
 
 ## APPLICATION DEVELOPMENT
 
-### --> Setting the working environment
+### --> Setting the working environments
 
 The required software is installed and the directory structure needed for the project is generated. The raw data is downloaded and stored into the ./01_Raw_data directory.
 
@@ -161,4 +172,4 @@ plink --bfile ../../01_Raw_data/current_data/MARITIME_ROUTE --keep ind_mc688.txt
 >The coordinates of populations included in both, current and ancient DNA files were created in order to plot the MAFs. The coordinate values were determined for the capital of the country/region and obtained from diverese sources.
 
 2. Running the interface
->The user's inteface was designed  using a Rshiny script "var_track_app.R", which is stored in the bin folder. Tis script makes use of the functions defined in the "var_track_functions.R" script to locate the pathogenic variants and plot the results.
+>The user's inteface was designed  using a Rshiny script "var_track_app.R", which is stored in the bin folder. This script makes use of the functions defined in the "var_track_functions.R" script to locate the pathogenic variants and plot the results.
