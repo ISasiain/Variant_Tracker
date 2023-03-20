@@ -52,6 +52,8 @@ The following R scripts, which are available in the bin folder of the project's 
 
 ## APPLICATION DEVELOPMENT
 
+All the files generated in the development pricess have not been included in the GitHub repository due to space constraints.
+
 ### --> Setting the working environments
 
 The required software is installed and the directory structure needed for the project is generated. The raw data is downloaded and stored into the ./01_Raw_data directory.
@@ -187,4 +189,4 @@ echo "1	rs74315309	2.601099	236645755	1	3" >> bq249.2.bim;
 >The coordinates of populations included in both, current and ancient DNA files were created in order to plot the MAFs. The coordinate values were determined for the capital of the country/region and obtained from diverese sources.
 
 2. Running the interface
->The user's inteface was designed  using a Rshiny script "var_track_app.R", which is stored in the bin folder. This script makes use of the functions defined in the "var_track_functions.R" script to locate the pathogenic variants and plot the results.
+>The user's inteface was designed  using a Rshiny script "var_track_app.R", which is stored in the bin folder. This script makes use of the functions defined in the "var_track_functions.R" script to locate the pathogenic variants and plot the results. All the files (except the input bim files) needed for running the app are available in the 04_User_interface directory
