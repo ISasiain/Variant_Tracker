@@ -8,6 +8,19 @@ The aim of this tool is to identify all the pathogenic variants from an individu
 
 ## INSTALLING AND RUNNING THE SOFTWARE
 
+* **Installing the required files and scripts**
+
+    All the files and script necessary to run the Rshiny app are avilable in the 04_Users_interface folder of the current GitHub page and the generated test input bim files in the 03_Generate_input files. This files can be downloaded an run locally using Rstudio using the following R command;
+
+    ```Rscript
+    shiny::runApp(<path_to_app>)
+    ```
+
+    *It must be taken into consideration that the following R packages must be installed and activated to run the app locally; rshiny, rshinythemes, leaflet and leaflet.minicharts.
+
+* **Running the app online**
+
+    The created app can also be run online using the followin [shinyapp.io link](http://isasiain.shinyapps.io/pop_gen_complete). However, it must be talken into account that this online version may fail when analysing the MAF of the variants across time due to the large amount of data that has to be processed. Therefore, running the app locally is advisable.
 
 
 ## USAGE
@@ -159,11 +172,13 @@ cd bq249;
 echo "Basque 249" > ind_bq249.txt;
 plink --bfile ../../01_Raw_data/current_data/MARITIME_ROUTE --keep ind_bq249.txt --make-bed --out bq249;
 
-#Generate input file choosing the individual "Macedonia 688"
-mkdir ../mc688;
-cd ../mc688;
-echo "Macedonia 688" > ind_mc688.txt;
-plink --bfile ../../01_Raw_data/current_data/MARITIME_ROUTE --keep ind_mc688.txt --make-bed --out mc688;
+#Generate input file randomly adding pathogenic variants to the previous generated file
+mkdir ../bq249.2;
+cd ../bq249.2;
+cp ../bq249/bq249.bim ./bq249.2.bim;
+echo "1 rs5082  1.737886    161193683   3   1" >> bq249.2.bim;
+echo "1	rs121908116	2.601098	236645666	0	4" >> bq249.2.bim;
+echo "1	rs74315309	2.601099	236645755	1	3" >> bq249.2.bim;
 ```
 
 ### --> Creating an interface
