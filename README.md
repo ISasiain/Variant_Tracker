@@ -92,7 +92,7 @@ cd clinvar;
 wget wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz;
 gunzip variant_summary.txt.gz;
 ```
-> The remaining files were obtained from the course Canvas page (current DNA plink files) or were provided by the teacher (ancient DNA plink files.) The current files were stored into the current_data directory, and the ancient files into the ancien_data directory.
+> The remaining files were obtained from the course Canvas page (current DNA plink files) or were provided by the teacher ([ancient DNA plink files in Dive](https://drive.google.com/drive/folders/1LQyaf6zNSWbklSlf7stQmwFL8N3RZ9NJ?usp=sharing).) The current files were stored into the current_data directory, and the ancient files into the ancien_data directory.
 
 3. Filtering the clinvar database to keep the ones classified as pathogenic or likely pathogenic.
 ```bash
